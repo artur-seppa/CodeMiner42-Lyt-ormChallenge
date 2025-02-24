@@ -1,0 +1,38 @@
+{
+  "name": "codeminer42-lyt-fastify",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "./src/index.js",
+  "scripts": {
+    "start": "nodemon src/index.js",
+    "test": "vitest",
+    "migrate": "knex migrate:latest",
+    "rollback": "knex migrate:rollback"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/artur-seppa/CodeMiner42-Lyt-Fastify.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/artur-seppa/CodeMiner42-Lyt-Fastify/issues"
+  },
+  "homepage": "https://github.com/artur-seppa/CodeMiner42-Lyt-Fastify#readme",
+  "dependencies": {
+    "@fastify/cors": "^10.0.2",
+    "@fastify/jwt": "^9.0.4",
+    "fastify": "^5.2.1",
+    "knex": "^3.1.0",
+    "objection": "^3.1.5",
+    "pg": "^8.13.3"
+  },
+  "devDependencies": {
+    "fastify-plugin": "^5.0.1",
+    "nodemon": "^3.1.9",
+    "supertest": "^7.0.0",
+    "vitest": "^3.0.5"
+  }
+}
