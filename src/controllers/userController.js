@@ -1,50 +1,30 @@
-import { createShortUrl } from '../service/createShortUrl.js';
-import { redirectToOriginalUrl } from '../service/redirectToOriginalUrl.js';
-import { redirectToVisitsCounter } from '../service/redirectToVisitsCounter.js';
-
-import { ApplicationError, ERROR_CODES } from '../errors/applicationErro.js';
+import { UserService } from '../service/userService.js';
 
 export class UserController {
-    constructor(urlDatabase) {
-        this.urlDatabase = urlDatabase;
+    constructor() {
+        this.userService = new UserService();
     }
 
-    async createShortUrl(request, reply) {
-        const { url: originalUrl } = request.body;
-        const response = createShortUrl(originalUrl, this.urlDatabase);
+    async createUser(request, reply) {
+        try {
+            const { name, password, email } = request.body;
 
-        if (response.status === 'error') {
-            throw new ApplicationError(ERROR_CODES.INVALID_INPUT, response.message);
-        }
+            const response = await this.userService.createUser(name, password, email);
 
-        return reply.status(201).send({
-            shortUrl: response.shortUrl,
-            originalUrl: response.originalUrl
-        });
-    }
+            if (response.status === 'error') {
+                return reply.status(400).send({
+                    message: response.message
+                });
+            }
 
-    async redirect(request, reply) {
-        const { shortCode } = request.params;
-        const response = redirectToOriginalUrl(shortCode, this.urlDatabase);
-
-        if (response.status === 'error') {
-            throw new ApplicationError(ERROR_CODES.RESOURCE_NOT_FOUND, response.message);
-        } else {
-            reply
-                .status(301)
-                .redirect(response.redirect);
+            return reply.status(201).send({
+                status: response.status,
+                user: response.user,
+            });
+        } catch (error) {
+            return reply.status(500).send({
+                error
+            });
         }
     }
-
-    async visitsCounter(request, reply) {
-        const { shortCode } = request.params;
-        const response = redirectToVisitsCounter(shortCode, this.urlDatabase);
-
-        if (response.status === 'error') {
-            throw new ApplicationError(ERROR_CODES.RESOURCE_NOT_FOUND, response.message);
-        } else {
-            return reply.status(200).send({ visits: response.visits });
-        }
-    }
-
 }
