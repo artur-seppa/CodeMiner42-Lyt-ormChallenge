@@ -13,7 +13,7 @@ dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
 export class UrlRepository {
     async createUrl(urlData) {
-        const { user_id, short_url, original_url } = urlData;
+        const { user_id, short_url, original_url, utm_parameters } = urlData;
 
         return await ShortUrl.transaction(async (trx) => {
             const user = User.query().findById(user_id);
@@ -24,8 +24,9 @@ export class UrlRepository {
 
             return ShortUrl.query().insert({
                 original_url,
+                utm_parameters,
                 short_url,
-                user_id
+                user_id,
             });
         });
     }
