@@ -7,7 +7,7 @@ export class UrlService {
         this.urlRepository = new UrlRepository();
     }
 
-    async createShortUrl(user_id, original_url) {
+    async createShortUrl(user_id, original_url, utm_parameters) {
         if (!original_url || !isValidUrl(original_url)) {
             return {
                 status: 'error',
@@ -22,6 +22,7 @@ export class UrlService {
             user_id,
             short_url,
             original_url,
+            utm_parameters
         });
 
         if (!url) {
@@ -39,34 +40,42 @@ export class UrlService {
     }
 
     async getOriginalUrl(ip_address, shortCode) {
-            const url = await this.urlRepository.findUrlByShortCode({ip_address, shortCode});
+        const url = await this.urlRepository.findUrlByShortCode({ ip_address, shortCode });
 
-            if (!url) {
-                return {
-                    status: 'error',
-                    message: 'Short URL not found',
-                };
-            }
-
+        if (!url) {
             return {
-                status: 'success',
-                original_url: url.original_url,
+                status: 'error',
+                message: 'Short URL not found',
             };
+        }
+
+        const utm = url.utm_parameters
+            ? new URLSearchParams(url.utm_parameters).toString()
+            : '';
+
+        const transformedUrl = utm
+            ? `${url.original_url}${url.original_url.includes('?') ? '&' : '?'}${utm}`
+            : url.original_url;
+
+        return {
+            status: 'success',
+            original_url: transformedUrl
+        };
     }
 
     async getUrlVisits(shortCode) {
-            const url = await this.urlRepository.countVisits(shortCode);
+        const url = await this.urlRepository.countVisits(shortCode);
 
-            if (!url) {
-                return {
-                    status: 'error',
-                    message: 'Short URL not found',
-                };
-            }
-
+        if (!url) {
             return {
-                status: 'success',
-                visits: url.visits,
+                status: 'error',
+                message: 'Short URL not found',
             };
+        }
+
+        return {
+            status: 'success',
+            visits: url.visits,
+        };
     }
 }

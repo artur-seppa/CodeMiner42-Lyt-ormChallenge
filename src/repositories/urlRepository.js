@@ -4,7 +4,7 @@ import { User } from '../models/User.mjs';
 
 export class UrlRepository {
     async createUrl(urlData) {
-        const { user_id, short_url, original_url } = urlData;
+        const { user_id, short_url, original_url, utm_parameters } = urlData;
 
         return await ShortUrl.transaction(async (trx) => {
             const user = await User.query().findById(user_id);
@@ -15,8 +15,9 @@ export class UrlRepository {
 
             return await ShortUrl.query().insert({
                 original_url,
+                utm_parameters,
                 short_url,
-                user_id
+                user_id,
             });
         });
     }

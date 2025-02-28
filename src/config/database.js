@@ -1,17 +1,21 @@
 import dotenv from 'dotenv';
 import knex from 'knex';
 import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 dotenv.config({ path: '../../.env' });
 
 const developmentConfig = {
   client: 'pg',
   connection: {
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASS,
-    database: process.env.DB_NAME,
+    host: '172.28.137.108',
+    port: 5432,
+    user: 'postgres',
+    password: 'reiman123',
+    database: 'codeminer_orm_challenge',
   },
   migrations: {
     tableName: 'knex_migrations',

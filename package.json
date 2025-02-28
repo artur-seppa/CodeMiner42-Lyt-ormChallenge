@@ -8,7 +8,7 @@
     "start": "nodemon src/index.js",
     "test": "NODE_ENV=test vitest",
     "migrate": "npx knex migrate:latest --knexfile=src/config/knexfile.js",
-    "rollback": "npx knex migrate:rollback"
+    "rollback": "npx knex migrate:rollback --knexfile=src/config/knexfile.js"
   },
   "repository": {
     "type": "git",

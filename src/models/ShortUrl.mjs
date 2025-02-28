@@ -29,6 +29,10 @@ export class ShortUrl extends Model {
                 },
                 user_id: {
                     type: 'integer'
+                },
+                utm_parameters: {
+                    type: 'object',
+                    nullable: true
                 }
             }
         };
