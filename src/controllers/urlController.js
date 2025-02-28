@@ -9,8 +9,8 @@ export class UrlController {
 
     async createShortUrl(request, reply) {
         try {
-            const { user_id, url: original_url } = request.body;
-            const response = await this.urlService.createShortUrl(user_id, original_url);
+            const { user_id, url: original_url, utm_parameters } = request.body;
+            const response = await this.urlService.createShortUrl(user_id, original_url, utm_parameters);
 
             if (response.status === 'error') {
                 return reply.status(400).send({
@@ -21,7 +21,8 @@ export class UrlController {
             return reply.status(201).send({
                 status: response.status,
                 short_url: response.short_url,
-                original_url: response.original_url
+                original_url: response.original_url,
+                utm_parameters: response.utm_parameters
             });
         } catch (error) {
             return reply.status(500).send(
