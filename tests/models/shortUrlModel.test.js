@@ -72,6 +72,40 @@ describe('ShortUrlModel', () => {
         });
     });
 
+    describe('utm_parameters', () => {
+        it('creates a short URL with UTM parameters', async () => {
+            const user = await UserFactory.create();
+            const utmParams = {
+                utm_source: 'google',
+                utm_medium: 'cpc',
+                utm_campaign: 'summer_sale'
+            };
+
+            const shortUrl = await ShortUrlFactory.create({
+                user_id: user.id,
+                utm_parameters: utmParams
+            });
+
+            const foundShortUrl = await db('shortUrls').where({ id: shortUrl.id }).first();
+
+            expect(foundShortUrl.utm_parameters).toBeDefined();
+            expect(foundShortUrl.utm_parameters).toEqual(utmParams);
+        });
+
+        it('can create short URL without UTM parameters', async () => {
+            const user = await UserFactory.create();
+            const shortUrl = await ShortUrlFactory.create({
+                user_id: user.id,
+                utm_parameters: null
+            });
+
+            const foundShortUrl = await db('shortUrls').where({ id: shortUrl.id }).first();
+
+            expect(foundShortUrl.utm_parameters).toBeNull();
+        });
+
+    });
+
     describe('relations', () => {
         it('belongs to a user', async () => {
             const user = await UserFactory.create();
