@@ -5,17 +5,17 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-dotenv.config({ path: '../../.env' });
+dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
 export default {
   development: {
     client: 'pg',
     connection: {
-      host: '172.28.137.108',
-      port: 5432,
-      user: 'postgres',
-      password: 'reiman123',
-      database: 'codeminer_orm_challenge',
+      host: process.env.DB_HOST || '172.28.137.108',
+      port: process.env.DB_PORT || 5432,
+      user: process.env.DB_USER || 'postgres',
+      password: process.env.DB_PASSWORD || 'reiman123',
+      database: process.env.DB_NAME || 'codeminer_orm_challenge',
     },
     pool: {
       min: 2,

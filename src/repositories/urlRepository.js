@@ -2,18 +2,27 @@ import { ShortUrl } from '../models/ShortUrl.mjs';
 import { Clicks } from '../models/Clicks.mjs';
 import { User } from '../models/User.mjs';
 
+import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+
 export class UrlRepository {
     async createUrl(urlData) {
         const { user_id, short_url, original_url } = urlData;
 
         return await ShortUrl.transaction(async (trx) => {
-            const user = await User.query().findById(user_id);
+            const user = User.query().findById(user_id);
 
             if (user == undefined) {
                 return false;
             }
 
-            return await ShortUrl.query().insert({
+            return ShortUrl.query().insert({
                 original_url,
                 short_url,
                 user_id
@@ -23,16 +32,16 @@ export class UrlRepository {
 
     async findUrlByShortCode(urlData) {
         const { ip_address, shortCode } = urlData;
-        const short_url = 'http://localhost:3000/' + shortCode;
+        const short_url = process.env.BASE_URL + shortCode;
 
         return await ShortUrl.transaction(async (trx) => {
-            const url = await ShortUrl.query().findOne({ short_url: short_url });
+            const url = ShortUrl.query().findOne({ short_url: short_url });
 
             if (url == undefined) {
                 return false;
             }
 
-            await Clicks.query().insert({
+            Clicks.query().insert({
                 ip_address,
                 shorturl_id: url.id
             });
@@ -42,17 +51,16 @@ export class UrlRepository {
     }
 
     async countVisits(shortCode) {
-        const short_url = 'http://localhost:3000/' + shortCode;
-
+        const short_url = process.env.BASE_URL + shortCode;
+        
         return await ShortUrl.transaction(async (trx) => {
-            const url = await ShortUrl.query().findOne({ short_url: short_url });
+            const url = ShortUrl.query().findOne({ short_url: short_url });
 
-            console.log(url);
-            if (url == undefined) {
+            if (url === undefined) {
                 return false;
             }
 
-            return await Clicks.query().count('* as visits').where({ shorturl_id: url.id }).first();
+            return Clicks.query().count('* as visits').where({ shorturl_id: url.id }).first();
         });
     }
 }
