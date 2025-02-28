@@ -8,7 +8,7 @@ const ClicksFactory = Factory.define(({ onCreate, sequence, params }) => {
 
     const {
         id = sequence,
-        ip_address = faker.internet.ip(),
+        ip_address = faker.internet.ipv4(),
         shorturl_id = null,
         created_at = new Date().toISOString()
     } = params;

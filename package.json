@@ -6,7 +6,7 @@
   "main": "./src/index.js",
   "scripts": {
     "start": "nodemon src/index.js",
-    "test": "NODE_ENV=test vitest",
+    "test": "NODE_ENV=test vitest --fileParallelism=false",
     "migrate": "npx knex migrate:latest --knexfile=src/config/knexfile.js",
     "rollback": "npx knex migrate:rollback"
   },
